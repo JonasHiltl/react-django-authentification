@@ -10,6 +10,10 @@ const overwriteP = css`
 margin-bottom: 0px;
 `;
 
+const avatar = css`
+border-radius: 7px;
+margin: 0px 10px 0px 0px;
+`;
 
 
 const menu = (
@@ -34,7 +38,7 @@ const ProfileMenu = () => {
     return(
         <Dropdown overlay={menu} trigger={['click']} placement="bottomLeft" arrow>
             <div>
-                <Avatar src="https://images.unsplash.com/photo-1527082395-e939b847da0d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80" />
+                <Avatar style={{borderRadius: '7px', margin: '0px 10px 0px 0px',}} src="https://images.unsplash.com/photo-1527082395-e939b847da0d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80" />
                 <p className={overwriteP}>Jonas Hiltl</p>
                 <DownOutlined />
             </div>
