@@ -4,5 +4,7 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"python.pythonPath": "C:\\Users\\Jonas\\.virtualenvs\\AntDesign-TgIU7Y6b\\Scripts\\python.exe"
+	}
 }
