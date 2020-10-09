@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils.translation import ugettext_lazy as _
 
 MEMBERSHIP_CHOICES =(
     ('Enterprise', 'ent'),
@@ -14,18 +15,58 @@ def user_directory_path(instance, filename):
 def company_directory_path(Company, filename):
     return '/company_images/{0}/{1}'.format(Company.name, filename)
 
-# Create your models here.
-class Membership(models.Model):
-    pass
+class UserManager(BaseUserManager):
+    """Define a model manager for User model with no username field."""
 
-class UserMembership(models.Model):
-    pass
+    use_in_migrations = True
+
+    def _create_user(self, email, password, **extra_fields):
+        """Create and save a User with the given email and password."""
+        if not email:
+            raise ValueError('The given email must be set')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None, **extra_fields):
+        """Create and save a regular User with the given email and password."""
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        """Create and save a SuperUser with the given email and password."""
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(email, password, **extra_fields)
+
+class User(AbstractUser):
+    """User model."""
+    username = None
+    email = models.EmailField(_('email address'), unique=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    
+    objects = UserManager()
 
 class Company(models.Model):
     customLogo = models.ImageField(upload_to=company_directory_path, blank=True)
+    owner = models.OneToOneField(User, related_name="company_owner", on_delete=models.CASCADE, default="Jonas")
     name = models.CharField(max_length=150)
     welcomeMessage = models.TextField(blank=True, null=True)
     favicon = models.ImageField(upload_to=company_directory_path, blank=True)
+
+class GroupsEmployees(models.Model):
+    pass
 
 class Course(models.Model):
     mainAuthor = models.ForeignKey(User, related_name='courses_author', on_delete=models.CASCADE)

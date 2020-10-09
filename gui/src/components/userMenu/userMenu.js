@@ -25,7 +25,7 @@ const menu = (
         </a>
         </Menu.Item>
         <Menu.Item>
-        <a style={{display:'flex', alignItems: "center",}} target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">
+        <a style={{display:'flex', alignItems: "center",}} target="_blank" rel="noopener noreferrer" href="">
             <LogoutOutlined />
             <p className={overwriteP}>Log out</p>
         </a>
