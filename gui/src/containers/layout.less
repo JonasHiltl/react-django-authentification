@@ -126,9 +126,20 @@ p {
   .main-content-wrapper-collapsed{
     width: calc(100% - 80px);
     margin-left: -170px;
+    min-height: 100vh;
+    border-radius: 50px;
+    background-color: white;
+    z-index: 1;
+    padding: 20px 20px 20px 70px;
+    transition: 0.3s;
   }
   
   .sidebar-btn-collapsed{
+    color: white;
+    position: absolute;
+    bottom: 20px;
+    cursor: pointer;
+    pointer-events: all;
     right: 190px;
     transform: rotate(360deg);
   }
@@ -159,6 +170,12 @@ p {
   }
 
   .link-icon-collapsed {
+    height: auto;
+    width: 26px;
+    position: relative;
+  }
+
+  .link-icon-collapsed svg{
     width: 26px;
   }
   

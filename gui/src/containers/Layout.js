@@ -14,11 +14,15 @@ const HomeSVG = () => (
 )
 
 const HomeIcon = props => <Icon component={HomeSVG} {...props} />;
-  
+
+
 const CustomLayout = (props) => {
+
+    const [active, setActive] = useState(true)
 
     const overwriteP = css`
     margin-bottom: 0px;
+    color: white;
     `;
 
     const iconWrapper = css`
@@ -26,68 +30,63 @@ const CustomLayout = (props) => {
         align-items: center;
         margin-right: 15px;
     `;
-
-    var state = {
-        isCollapsed: false,
-      }
     
-
     return(
         <div className="wrapper">
             <div className="sidebar">
                 <div className="sidebar-btn-fixed">
                     <div className="sidebar-btn-relative">
-                        <div onClick={() => this.setState({isCollapsed: true})} className={ this.state.isCollapsed ? ".sidebar-btn" : ".sidebar-btn-collapsed"}>
+                        <div onClick={() => setActive(!active)} className={ active ? "sidebar-btn" : "sidebar-btn-collapsed"}>
                             <ArrowRightOutlined />
                         </div>
                     </div>
                 </div>
                 <div className="sidebar-flex">
-                    <div className= { this.state.isCollapsed ? ".sidebar-menu" : ".sidebar-menu-collapsed"}>
+                    <div className= { active ? "sidebar-menu" : "sidebar-menu-collapsed"}>
                         <center className="profile">
-                            <img className= { this.state.isCollapsed ? ".profile-img" : ".profile-img-collapsed"} src="{{ user.profile.image.url }}" alt=""/> {/* {{ user.profile.image.url }} */}
-                            <p className={name}>Username</p> {/* {{user.username}} */}
+                            <img className= { active ? "profile-img" : "profile-img-collapsed"} src="{{ user.profile.image.url }}" alt=""/> {/* {{ user.profile.image.url }} */}
+                            <p className={ active ? "name" : "name-collapsed"}>Username</p> {/* {{user.username}} */}
                         </center>
-                        <li className= { this.state.isCollapsed ? ".menu-link-list" : ".menu-link-list-collapsed"} id="menu-btn-1">
-                            <a className= { this.state.isCollapsed ? ".menu-link" : ".menu-link-collapsed"} href="{% url 'dashboard-home' %}">
+                        <li className= { active ? "menu-link-list" : "menu-link-list-collapsed"} id="menu-btn-1">
+                            <a className= { active ? "menu-link" : "menu-link-collapsed"} href="{% url 'dashboard-home' %}">
                                 <div className={iconWrapper}>
-                                    <HomeIcon className= { this.state.isCollapsed ? ".link-icon" : ".link-icon-collapsed"}/>
+                                    <HomeIcon className= { active ? "link-icon" : "link-icon-collapsed"}/>
                                 </div>
                                 {/*<img src="" alt=""/>  {% static "dashboard/images/home.svg" %} */}
-                                <p className= { this.state.isCollapsed ? ".link-text" : ".-collapsed"}>Dashboard</p>
+                                <p className= { active ? "link-text" : "link-text-collapsed"}>Dashboard</p>
                             </a>
                         </li>
-                        <li className= { this.state.isCollapsed ? ".menu-link-list" : ".menu-link-list-collapsed"} id="menu-btn-2">
-                            <a className= { this.state.isCollapsed ? ".menu-link" : ".menu-link-collapsed"} href=""> {/* {% url 'dashboard-watch' %} */}
+                        <li className= { active ? "menu-link-list" : "menu-link-list-collapsed"} id="menu-btn-2">
+                            <a className= { active ? "menu-link" : "menu-link-collapsed"} href=""> {/* {% url 'dashboard-watch' %} */}
                                 <div className={iconWrapper}>
-                                    <HomeIcon className= { this.state.isCollapsed ? ".link-icon" : ".link-icon-collapsed"}/>
+                                    <HomeIcon className= { active ? "link-icon" : "link-icon-collapsed"}/>
                                 </div>
                                 {/*<img src="" alt=""/>  {% static "dashboard/images/watch.svg" %} */}
-                                <p className= { this.state.isCollapsed ? ".link-text" : ".-collapsed"}>Courses</p>
+                                <p className= { active ? "link-text" : "link-text-collapsed"}>Courses</p>
                             </a>
                         </li>
-                        <li className= { this.state.isCollapsed ? ".menu-link-list" : ".menu-link-list-collapsed"} id="menu-btn-3">
-                            <a className= { this.state.isCollapsed ? ".menu-link" : ".menu-link-collapsed"} href="#">
+                        <li className= { active ? "menu-link-list" : "menu-link-list-collapsed"} id="menu-btn-3">
+                            <a className= { active ? "menu-link" : "menu-link-collapsed"} href="#">
                                 <div className={iconWrapper}>
-                                    <HomeIcon className= { this.state.isCollapsed ? ".link-icon" : ".link-icon-collapsed"}/>
+                                    <HomeIcon className= { active ? "link-icon" : "link-icon-collapsed"}/>
                                 </div>
                                 {/*<img src="" alt=""/>  {% static "dashboard/images/statistics.svg" %} */}
-                                <p className= { this.state.isCollapsed ? ".link-text" : ".-collapsed"}>Statistics</p>
+                                <p className= { active ? "link-text" : "link-text-collapsed"}>Statistics</p>
                             </a>
                         </li>
-                        <li className= { this.state.isCollapsed ? ".menu-link-list" : ".menu-link-list-collapsed"} id="menu-btn-4">
-                            <a className= { this.state.isCollapsed ? ".menu-link" : ".menu-link-collapsed"} href="#"> {/* {% url 'dashboard-profile' %} */}
+                        <li className= { active ? "menu-link-list" : "menu-link-list-collapsed"} id="menu-btn-4">
+                            <a className= { active ? "menu-link" : "menu-link-collapsed"} href="#"> {/* {% url 'dashboard-profile' %} */}
                                 <div className={iconWrapper}>
-                                    <HomeIcon className= { this.state.isCollapsed ? ".link-icon" : ".link-icon-collapsed"}/>
+                                    <HomeIcon className= { active ? "link-icon" : "link-icon-collapsed"}/>
                                 </div>
-                                {/*<img src="" alt=""/>  {% static "dashboard/images/profile.svg" %} */}
-                                <p className= { this.state.isCollapsed ? ".link-text" : ".-collapsed"}>Profile</p>
+                                {/*<img src="" alt=""/>  {% static "dashboard/images/profilesvg" %} */}
+                                <p className= { active ? "link-text" : "link-text-collapsed"}>Profile</p>
                             </a>
                         </li>
                     </div>
                 </div>
             </div>
-            <div className= { this.state.isCollapsed ? ".main-content-wrapper" : ".main-content-wrapper-collapse"}>
+            <div className= { active ? "main-content-wrapper" : "main-content-wrapper-collapsed"}>
                 {props.children}
             </div>
         </div>
