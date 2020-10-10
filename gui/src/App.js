@@ -1,17 +1,33 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import * as actions from './store/actions/auth';
 
-import './App.less'
+import './App.less';
 import CustomLayout from './containers/Layout';
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar';
 
-function App() {
-  return (
-    <div className="App">
-      <CustomLayout>
-        <Navbar />
-      </CustomLayout>
-    </div>
-  );
+class App extends Component {
+  componentDidMount() {
+    this.props.onTryAutoSignup();
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <CustomLayout {...this.props}>
+          <Navbar />
+        </CustomLayout>
+      </div>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.token !== null, // if token is null isAuthenticated = False if token not null isAuthenticated = True
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  onTryAutoSignup: () => dispatch(actions.authCheckState()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
