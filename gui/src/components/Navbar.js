@@ -1,8 +1,15 @@
 import React from 'react';
-import ProfileMenu from './userMenu/userMenu';
+import styled from '@emotion/styled';
+
+import { Input, AutoComplete, Space} from 'antd';
+import ProfileMenu from './userMenu/UserMenu';
 import './Navbar.less';
 
-import { Input, AutoComplete } from 'antd';
+const NavbarWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  float: right;
+  `;
 
 const options = [
   {
@@ -16,25 +23,27 @@ const options = [
   },
 ];
 
-const Navbar = (props) => (
-  <div className="navbar-wrapper">
-    <AutoComplete
-      style={{
-        width: 200,
-      }}
-      options={options}
-      placeholder="input search text"
-      filterOption={(inputValue, option) =>
-        option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-      }
-    >
-      <Input.Search
-        onSearch={(value) => console.log(value)}
-        style={{ width: 200 }}
-      />
-    </AutoComplete>
-    <ProfileMenu />
-  </div>
+const Navbar = () => (
+  <NavbarWrapper>
+    <Space size={10}>
+      <AutoComplete
+          style={{
+            width: 200,
+          }}
+          options={options}
+          placeholder="input search text"
+          filterOption={(inputValue, option) =>
+            option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+          }
+        >
+          <Input.Search
+            onSearch={(value) => console.log(value)}
+            style={{ width: 200 }}
+          />
+      </AutoComplete>
+      <ProfileMenu />
+    </Space>
+  </NavbarWrapper>
 );
 
 export default Navbar;

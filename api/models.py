@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 MEMBERSHIP_CHOICES =(
     ('Enterprise', 'ent'),
@@ -15,28 +14,21 @@ def user_directory_path(instance, filename):
 def company_directory_path(Company, filename):
     return '/company_images/{0}/{1}'.format(Company.name, filename)
 
-class UserManager(BaseUserManager):
-    """Define a model manager for User model with no username field."""
 
-    use_in_migrations = True
-
-    def _create_user(self, email, password, **extra_fields):
-        """Create and save a User with the given email and password."""
+class UserAccountManager(BaseUserManager):
+    def create_user(self, email, name, password=None):
         if not email:
-            raise ValueError('The given email must be set')
+            raise ValueError('Users must have an email address')
+        
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(email=email, name=name)
+
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
+
         return user
 
-    def create_user(self, email, password=None, **extra_fields):
-        """Create and save a regular User with the given email and password."""
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
-
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(self, email, password, name, **extra_fields):
         """Create and save a SuperUser with the given email and password."""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -46,21 +38,29 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
 
-        return self._create_user(email, password, **extra_fields)
+class UserAccount(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
-class User(AbstractUser):
-    """User model."""
-    username = None
-    email = models.EmailField(_('email address'), unique=True)
+    objects = UserAccountManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['name']
+
+    def get_full_name(self):
+        return self.name
     
-    objects = UserManager()
+    def get_short_name(self):
+        return self.name
+    
+    def __str__(self):
+        return self.email
 
 class Company(models.Model):
     customLogo = models.ImageField(upload_to=company_directory_path, blank=True)
-    owner = models.OneToOneField(User, related_name="company_owner", on_delete=models.CASCADE, default="Jonas")
+    owner = models.OneToOneField(UserAccount, related_name="company_owner", on_delete=models.CASCADE, default="Jonas")
     name = models.CharField(max_length=150)
     welcomeMessage = models.TextField(blank=True, null=True)
     favicon = models.ImageField(upload_to=company_directory_path, blank=True)
@@ -69,13 +69,13 @@ class GroupsEmployees(models.Model):
     pass
 
 class Course(models.Model):
-    mainAuthor = models.ForeignKey(User, related_name='courses_author', on_delete=models.CASCADE)
+    mainAuthor = models.ForeignKey(UserAccount, related_name='courses_author', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(max_length= 200, default=1, unique=True)
     created = models.DateTimeField(auto_now_add=True)
     cover = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
-    students = models.ManyToManyField(User, related_name='courses_joined', blank=True)
+    students = models.ManyToManyField(UserAccount, related_name='courses_joined', blank=True)
 
     def __str__(self):
         return self.title
@@ -92,7 +92,7 @@ class VideoItem(models.Model):
     chapter = models.ForeignKey(Chapter, related_name='videos', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length= 200, default=1, unique=True)
-    owner = models.ForeignKey(User, related_name='videoitems_created', on_delete=models.CASCADE)
+    owner = models.ForeignKey(UserAccount, related_name='videoitems_created', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
