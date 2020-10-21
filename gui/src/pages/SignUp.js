@@ -5,7 +5,7 @@ import { Typography } from 'antd';
 const { Title } = Typography;
 
 const SignUp = () => (
-<Title>ResetPassword</Title>
+<Title>Signup</Title>
 );
 
 export default SignUp;

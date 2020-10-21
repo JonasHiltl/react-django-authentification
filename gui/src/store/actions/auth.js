@@ -1,99 +1,112 @@
 import axios from 'axios';
-import * as actionTypes from './actionTypes';
+import {
+    SIGNUP_SUCCESS,
+    SIGNUP_FAIL,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+    ACTIVATION_SUCCESS,
+    ACTIVATION_FAIL,
+    RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_FAIL,
+    RESET_PASSWORD_CONFIRM_SUCCESS,
+    RESET_PASSWORD_CONFIRM_FAIL,
+    LOGOUT,
+    USER_LOADED_SUCCESS,
+    USER_LOADED_FAIL,
+    AUTHENTICATED_FAIL,
+    AUTHENTICATED_SUCCESS
+} from './types';
 
-export const authStart = () => ({
-  type: actionTypes.AUTH_START,
-});
-
-export const authSuccess = (token) => ({
-  type: actionTypes.AUTH_SUCCESS,
-  token,
-});
-
-export const authFail = (error) => ({
-  type: actionTypes.AUTH_FAIL,
-  error,
-});
-
-export const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('expirationDate');
-  return {
-    type: actionTypes.AUTH_LOGOUT,
-  };
-};
-
-export const checkAuthTimeout = (expirationTime) => (dispatch) => {
-  setTimeout(() => {
-    dispatch(logout());
-  }, expirationTime * 1000);
-};
-
-export const authLogin = (email, password) => (dispatch) => {
-  dispatch(authStart());
-  axios
-    .post('http://127.0.0.1:8000/rest-auth/login/', {
-      email,
-      password,
-    })
-    .then((res) => {
-      // response from rest-framework
-      const token = res.data.key;
-      const expirationDate = new Date(new Date().getTime() + 3600 * 1000); // expiration Time of 1 hour
-      localStorage.setItem('token', token);
-      localStorage.setItem('expirationDate', expirationDate);
-      dispatch(authSuccess(token));
-      dispatch(checkAuthTimeout(3600));
-    })
-    .catch((err) => {
-      dispatch(authFail(err));
-    });
-};
-
-export const authSignup = (
-  email,
-  first_name,
-  last_name,
-  password1,
-  password2
-) => (dispatch) => {
-  dispatch(authStart());
-  axios
-    .post('http://127.0.0.1:8000/rest-auth/registration/', {
-      email,
-      first_name,
-      last_name,
-      password1,
-      password2,
-    })
-    .then((res) => {
-      const token = res.data.key;
-      const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-      localStorage.setItem('token', token);
-      localStorage.setItem('expirationDate', expirationDate);
-      dispatch(authSuccess(token));
-      dispatch(checkAuthTimeout(3600));
-    })
-    .catch((err) => {
-      dispatch(authFail(err));
-    });
-};
-
-export const authCheckState = () => (dispatch) => {
-  const token = localStorage.getItem('token');
-  if (token === undefined) {
-    dispatch(logout());
-  } else {
-    const expirationDate = new Date(localStorage.getItem('expirationDate'));
-    if (expirationDate <= new Date()) {
-      dispatch(logout());
-    } else {
-      dispatch(authSuccess(token));
-      dispatch(
-        checkAuthTimeout(
-          (expirationDate.getTime() - new Date().getTime()) / 1000
-        )
-      );
+export const checkAuthenticated = () => async dispatch => {
+    if (typeof window == 'undefined') {
+        dispatch({
+            type: AUTHENTICATED_FAIL
+        });
     }
-  }
+    if (localStorage.getItem('access')) {
+        const config = {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+    
+        const body = JSON.stringify({ token: localStorage.getItem('access') });
+    
+        try {
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/jwt/verify/`, body, config);
+    
+            if (res.data.code !== 'token_not_valid') {
+                dispatch({
+                    type: AUTHENTICATED_SUCCESS
+                });
+            } else {
+                dispatch({
+                    type: AUTHENTICATED_FAIL
+                });
+            }
+        } catch (err) {
+            dispatch({
+                type: AUTHENTICATED_FAIL
+            });
+        }
+    } else {
+        dispatch({
+            type: AUTHENTICATED_FAIL
+        });
+    }
+};
+
+export const load_user = () => async dispatch => {
+    if (localStorage.getItem('access')) {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `JWT ${localStorage.getItem('access')}`,
+                'Accept': 'application/json'
+            }
+        };
+
+        try {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/auth/users/me/`, config);
+
+            dispatch({
+                type: USER_LOADED_SUCCESS,
+                payload: res.data
+            });
+        } catch (err) {
+            dispatch({
+                type: USER_LOADED_FAIL
+            });
+        }
+    } else {
+        dispatch({
+            type: USER_LOADED_FAIL
+        });
+    }
+};
+
+export const login = (email, password) => async dispatch => {
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const body = JSON.stringify({ email, password });
+
+    try {
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config);
+
+        dispatch({
+            type: LOGIN_SUCCESS,
+            payload: res.data
+        });
+
+        dispatch(load_user());
+    } catch (err) {
+        dispatch({
+            type: LOGIN_FAIL
+        });
+    }
 };

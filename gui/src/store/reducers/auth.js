@@ -1,49 +1,55 @@
-import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utility';
+import {
+    SIGNUP_SUCCESS,
+    SIGNUP_FAIL,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+    LOGOUT,
+    AUTHENTICATED_FAIL,
+    AUTHENTICATED_SUCCESS,
+    USER_LOADED_SUCCESS,
+    USER_LOADED_FAIL
+} from '../actions/types';
 
 const initialState = {
-  token: null,
-  error: null,
-  loading: false,
+    access: localStorage.getItem('access'),
+    refresh: localStorage.getItem('refresh'),
+    isAuthenticated: null,
+    user: null
 };
 
-const authStart = (state, action) =>
-  updateObject(state, {
-    error: null,
-    loading: true,
-  });
+export default function(state = initialState, action) {
+    const { type, payload } = action;
 
-const authSuccess = (state, action) =>
-  updateObject(state, {
-    token: action.token, // token comes from the authSuccess function in auth.js
-    error: null,
-    loading: false,
-  });
-
-const authFail = (state, action) =>
-  updateObject(state, {
-    error: action.error,
-    loading: false,
-  });
-
-const authLogout = (state, action) =>
-  updateObject(state, {
-    token: null,
-  });
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case actionTypes.AUTH_START:
-      return authStart(state, action);
-    case actionTypes.AUTH_SUCCESS:
-      return authSuccess(state, action);
-    case actionTypes.AUTH_FAIL:
-      return authFail(state, action);
-    case actionTypes.AUTH_LOGOUT:
-      return authLogout(state, action);
-    default:
-      return state;
-  }
-};
-
-export default reducer;
+    switch(type) {
+        case LOGIN_SUCCESS:
+            localStorage.setItem('access', payload.access);
+            return {
+                ...state,
+                isAuthenticated: true,
+                access: payload.access,
+                refresh: payload.refresh
+            }
+        case USER_LOADED_SUCCESS:
+            return {
+                ...state,
+                user: payload
+            }
+        case USER_LOADED_FAIL:
+            return {
+                ...state,
+                user: null
+            }
+        case LOGIN_FAIL:
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            return{
+                ...state,
+                access: null,
+                refresh: null,
+                isAuthenticated: false,
+                user: null
+            }
+        default:
+            return state
+    }
+}

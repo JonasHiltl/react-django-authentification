@@ -1,7 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React from 'react';
 import {BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import * as actions from './store/actions/auth';
 
 import './App.less';
 import CustomLayout from './containers/Layout';
@@ -17,22 +15,22 @@ import Activate from "./pages/Activate"
 
 
 const App = () => (
-  <Router>
-    <div className="App">
-      <CustomLayout>
-        <Navbar />
+    <Router>
+      <div className="App">
         <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/profile" component={Profile} />
+          <Route path="/login" exact component={NormalLoginForm} />
+          <Route path="/signup" exact component={SignUp} />
+          <Route path="/reset_password" exact component={ResetPassword} />
+          <Route path="/password/reset/confirm/:uid/:token" component={ResetPasswordConfirm} />
+          <Route path="/activate/:uid/token" component={Activate} />
+          <CustomLayout>
+            <Navbar />
+              <Route path="/" exact component={Home} />
+              <Route path="/profile" exact component={Profile} />
+          </CustomLayout>
         </Switch>
-      </CustomLayout>
-      <Route path="/login" component={NormalLoginForm} />
-      <Route path="/signup" component={SignUp} />
-      <Route path="/reset_password" component={ResetPassword} />
-      <Route path="/password/reset/confirm/:uid/:token" component={ResetPasswordConfirm} />
-      <Route path="/activate/:uid/token" component={Activate} />
-    </div>
-  </Router>
+      </div>
+    </Router>
 );
 
 export default App;
