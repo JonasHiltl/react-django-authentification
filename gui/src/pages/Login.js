@@ -1,15 +1,16 @@
 import React, { useState, useEffect  } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { login } from '../store/actions/auth';
 
 import { Form, Input, Button, Checkbox, Space, Typography } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { login, checkAuthenticated, load_user } from '../store/actions/auth';
 
 import "./login.less"
 const { Text, Title  } = Typography;
 
-const NormalLoginForm = ({ login }) => {
+const NormalLoginForm = ({ login, isAuthenticated}) => {
+
   const [formData, setFormData] = useState({
     email: localStorage.getItem('email') || '',
     password: localStorage.getItem('password') || '',
@@ -38,8 +39,9 @@ const NormalLoginForm = ({ login }) => {
       localStorage.setItem('password', password);
     }
   };
-  //if (isAuthenticated)
-  //      return <Redirect to='/' />;
+  
+  if (isAuthenticated)
+        return <Redirect to='/' />;
 
   return (
     <div className="container">
@@ -124,8 +126,8 @@ const NormalLoginForm = ({ login }) => {
   );
 };
   
-//const mapStateToProps = state => ({
-  //isAuthenticated: state.auth.isAuthenticated
-//});
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
 
-export default connect(null, { login })(NormalLoginForm);
+export default connect(mapStateToProps, { login })(NormalLoginForm);

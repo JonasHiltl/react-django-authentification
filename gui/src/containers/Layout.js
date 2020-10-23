@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { css } from 'emotion';
 import './layout.less';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { HomeIcon, ArrowIcon, WatchIcon, StatisticsIcon, ProfileIcon} from "../assets/CustomIcons"
 
-const CustomLayout = (props) => {
+const CustomLayout = ( props,{ isAuthenticated }) => {
   const [active, setActive] = useState(true);
 
   const iconWrapper = css`
@@ -13,6 +14,9 @@ const CustomLayout = (props) => {
     align-items: center;
     margin-right: 15px;
   `;
+
+  if (isAuthenticated == 'false')
+        return <Redirect to='/login' />;
 
   return (
     <div className="wrapper">

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 import { Input, AutoComplete, Space} from 'antd';
-import ProfileMenu from './userMenu/UserMenu';
+import ProfileMenu from './userMenu/ProfileMenu';
 import './Navbar.less';
 
 const NavbarWrapper = styled.div`
@@ -22,6 +22,7 @@ const options = [
     value: 'Wall Street',
   },
 ];
+
 
 const Navbar = () => (
   <NavbarWrapper>

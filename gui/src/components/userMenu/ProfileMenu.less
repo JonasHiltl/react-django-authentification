@@ -1,4 +1,5 @@
 @import '~antd/dist/antd.less';
+@import '~antd/lib/style/themes/default.less';
 
 p {
   margin-bottom: 0px;
@@ -25,4 +26,12 @@ P {
   
 .ant-dropdown-trigger {
   align-items: center;
+}
+
+.ant-modal-content {
+  border-radius: 8px;
+}
+
+.ant-modal-confirm-warning .ant-modal-confirm-body > .anticon, .ant-modal-confirm-confirm .ant-modal-confirm-body > .anticon {
+  color: @blue-6;
 }
