@@ -30,8 +30,8 @@ const App = () => (
             <Route path='/activate/:uid/token' component={Activate} />
             <CustomLayout>
               <Navbar />
-                <Route path='/' exact component={Home} />
-                <Route path='/profile' exact component={Profile} />
+              <Route path='/' exact component={Home} />
+              <Route path='/profile' exact component={Profile} />
             </CustomLayout>
           </Switch>
         </CheckAuthenticated>

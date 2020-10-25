@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import { HomeIcon, ArrowIcon, WatchIcon, StatisticsIcon, ProfileIcon} from "../assets/CustomIcons"
 
-const CustomLayout = ( props,{ isAuthenticated }) => {
+const CustomLayout = ({ isAuthenticated, user, props }) => {
   const [active, setActive] = useState(true);
 
   const iconWrapper = css`
@@ -15,7 +15,7 @@ const CustomLayout = ( props,{ isAuthenticated }) => {
     margin-right: 15px;
   `;
 
-  if (isAuthenticated == 'false')
+  if (isAuthenticated === false)
         return <Redirect to='/login' />;
 
   return (
@@ -35,10 +35,13 @@ const CustomLayout = ( props,{ isAuthenticated }) => {
             <center className="profile">
               <img
                 className={active ? 'profile-img' : 'profile-img-collapsed'}
-                src="{{ user.profile.image.url }}"
+                src=""
                 alt=""
               />
-              <p className={active ? 'name' : 'name-collapsed'}>Username</p>
+              { isAuthenticated?
+              <p className={active ? 'name' : 'name-collapsed'}>{ user.name }</p>
+              : <p className={active ? 'name' : 'name-collapsed'}>Undefined</p>
+              }
             </center>
             <li
               className={active ? 'menu-link-list' : 'menu-link-list-collapsed'}
@@ -122,4 +125,12 @@ const CustomLayout = ( props,{ isAuthenticated }) => {
   );
 };
 
-export default CustomLayout;
+const mapStateToProps = (state, ownProps) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user,
+    props: ownProps
+  }
+};
+
+export default connect(mapStateToProps)(CustomLayout);

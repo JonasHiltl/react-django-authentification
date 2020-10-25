@@ -4,12 +4,12 @@ import { Link, Redirect } from 'react-router-dom';
 
 import { Form, Input, Button, Checkbox, Space, Typography } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { login, checkAuthenticated, load_user } from '../store/actions/auth';
-
+import { login } from '../store/actions/auth';
 import "./login.less"
+
 const { Text, Title  } = Typography;
 
-const NormalLoginForm = ({ login, isAuthenticated}) => {
+const NormalLoginForm = ({ login, isAuthenticated, user }) => {
 
   const [formData, setFormData] = useState({
     email: localStorage.getItem('email') || '',
@@ -34,20 +34,27 @@ const NormalLoginForm = ({ login, isAuthenticated}) => {
 
     login(email, password);
     if (rememberMe) {
-      window.localStorage.setItem('rememberMe', rememberMe);
+      localStorage.setItem('rememberMe', rememberMe);
       localStorage.setItem('email', email);
       localStorage.setItem('password', password);
     }
   };
   
   if (isAuthenticated)
-        return <Redirect to='/' />;
+    return <Redirect to='/' />; 
 
   return (
     <div className="container">
       <div className="centered-wrapper">
         <Space direction="vertical" size={24} style={{ width: '100%' }}>
           <Title>COURSES</Title>
+          <div>
+            { user.name ?
+              <p>{ user.name }</p>
+              :
+              <p>Nicht eingeloggt</p>
+            }
+          </div>
           <Title level={3}>Log in to your account</Title>
           <Form 
             onFinish={e => onSubmit(e)}
@@ -126,8 +133,11 @@ const NormalLoginForm = ({ login, isAuthenticated}) => {
   );
 };
   
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
-});
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user
+  }
+};
 
 export default connect(mapStateToProps, { login })(NormalLoginForm);

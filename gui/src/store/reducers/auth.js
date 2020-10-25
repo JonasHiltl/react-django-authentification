@@ -14,7 +14,7 @@ const initialState = {
     access: localStorage.getItem('access'),
     refresh: localStorage.getItem('refresh'),
     isAuthenticated: null,
-    user: null
+    user: []
 };
 
 export default function(state = initialState, action) {
@@ -47,7 +47,7 @@ export default function(state = initialState, action) {
         case USER_LOADED_FAIL:
             return {
                 ...state,
-                user: null
+                user: []
             }
         case LOGIN_FAIL:
         case LOGOUT:

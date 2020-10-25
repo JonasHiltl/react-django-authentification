@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { css } from 'emotion';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 
-import { Menu, Dropdown, Avatar, Modal, Button } from 'antd';
+import { Menu, Dropdown, Avatar, Modal, Button, Typography } from 'antd';
 import { UserOutlined, LogoutOutlined, DownOutlined } from '@ant-design/icons';
 import './ProfileMenu.less';
-import { logout, load_user } from '../../store/actions/auth';
+import { logout } from '../../store/actions/auth';
 
-const overwriteP = css`
-  margin-bottom: 0px;
-`;
+const { Text } = Typography;
 
-function confirm() {
+function confirm({ logout }) {
   Modal.confirm({
     title: 'Confirm your Logout',
     centered: true,
@@ -26,52 +24,67 @@ function confirm() {
       </div>
     ),
     onOk() {
-      logout()
-      console.log('logged out');
-    },
+		logout();
+		return new Promise((resolve, reject) => {
+			setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+		  }).catch(() => console.log('Oops errors!'));
+	},
   });
 }
 
-const NavbarMenu = () => {
-  return (
-    <Menu>
-      <Menu.Item>
-        <Link to='!#'
-          style={{ display: 'flex', alignItems: 'center' }}
-        >
-          <UserOutlined />
-          <Button style={{ padding: '4px', }}  type="text">Profile</Button>
-        </Link>
-      </Menu.Item>
-      <Menu.Item>
-        <div
-          onClick={confirm}
-          style={{ display: 'flex', alignItems: 'center' }}
+const NavbarMenu = (props) => {
 
-        >
-          <LogoutOutlined />
-          <Button style={{ padding: '4px', }}  type="text">Log out</Button>
-        </div>
-      </Menu.Item>
-    </Menu>
-  );
+	return (
+		<Menu>
+		<Menu.Item>
+			<Link to='!#'
+			style={{ display: 'flex', alignItems: 'center' }}
+			>
+			<UserOutlined />
+			<Button style={{ padding: '4px', }}  type="text">Profile</Button>
+			</Link>
+		</Menu.Item>
+		<Menu.Item>
+			<div
+			onClick={confirm}
+			style={{ display: 'flex', alignItems: 'center' }}
+
+			>
+			<LogoutOutlined />
+			<Button style={{ padding: '4px', }}  type="text">Log out</Button>
+			</div>
+		</Menu.Item>
+		</Menu>
+	);
+	};
+
+const ProfileMenu = ( {user} ) => {
+
+	return (
+		<Dropdown overlay={NavbarMenu} trigger={['click']} placement="bottomLeft" arrow>
+			<div>
+			<Avatar
+				style={{ borderRadius: '7px', margin: '0px 10px 0px 0px' }}
+				src="https://images.unsplash.com/photo-1527082395-e939b847da0d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80"
+			/>
+			{ user.name ?
+			<Text>{user.name}</Text>
+			: <Text>Not logged in</Text>
+			}
+			<DownOutlined />
+			</div>
+		</Dropdown>
+	);
 };
 
-const ProfileMenu = ( user ) => (
-  <Dropdown overlay={NavbarMenu} trigger={['click']} placement="bottomLeft" arrow>
-    <div>
-      <Avatar
-        style={{ borderRadius: '7px', margin: '0px 10px 0px 0px' }}
-        src="https://images.unsplash.com/photo-1527082395-e939b847da0d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80"
-      />
-      <p className={overwriteP}>{ user.name }</p>
-      <DownOutlined />
-    </div>
-  </Dropdown>
-);
-
 const mapStateToProps = state => ({
-  user: state.auth.user
+	user: state.auth.user
 });
 
-export default connect (mapStateToProps)(ProfileMenu);
+const mapDispatchToProps = dispatch => {
+	return {
+		logout: () => dispatch(logout())
+	}
+}
+
+export default connect (mapStateToProps, mapDispatchToProps)(ProfileMenu);
