@@ -3,31 +3,38 @@ import { css } from 'emotion';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 
-import { Menu, Dropdown, Avatar, Modal, Button, Typography } from 'antd';
+import { Menu, Dropdown, Avatar, Modal, Button, Typography, Space } from 'antd';
 import { UserOutlined, LogoutOutlined, DownOutlined } from '@ant-design/icons';
 import './ProfileMenu.less';
 import { logout } from '../../store/actions/auth';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 function confirm({ logout }) {
   Modal.confirm({
-    title: 'Confirm your Logout',
+    /* title: 'Confirm your Logout', */
     centered: true,
     okText: 'Logout',
-    icon: <LogoutOutlined />,
+    icon: '',
     cancelButtonProps: {
-      danger: true,
-    },
+	  danger: true,
+	  type: 'primary'
+	},
+	okButtonProps: {
+		type: 'default'
+	},
     content: (
-      <div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+		  <div style={{ display: 'contents' }}>
+				<LogoutOutlined style={{ fontSize: 24, marginRight: '10px' }}/>
+				<Title style={{ marginBottom: '0px'}} level={3}>Confirm your Logout</Title>
+			</div>
       </div>
     ),
     onOk() {
-		logout();
 		return new Promise((resolve, reject) => {
 			setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
-		  }).catch(() => console.log('Oops errors!'));
+		  }).catch(() => console.log('Modal errors!'));
 	},
   });
 }

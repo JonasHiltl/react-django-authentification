@@ -1,11 +1,10 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 
 import { Form, Input, Button, Checkbox, Space, Typography } from 'antd';
 import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { login } from '../store/actions/auth';
-import "./login.less"
 
 const { Text, Title  } = Typography;
 
@@ -40,95 +39,91 @@ const NormalLoginForm = ({ login, isAuthenticated, user }) => {
     }
   };
   
-  if (isAuthenticated)
-    return <Redirect to='/' />; 
-
+  /* if (isAuthenticated)
+    return <Redirect to='/' />; */
   return (
-    <div className="container">
-      <div className="centered-wrapper">
-        <Space direction="vertical" size={24} style={{ width: '100%' }}>
-          <Title>COURSES</Title>
-          <div>
-            { user.name ?
-              <p>{ user.name }</p>
-              :
-              <p>Nicht eingeloggt</p>
-            }
-          </div>
-          <Title level={3}>Log in to your account</Title>
-          <Form 
-            onFinish={e => onSubmit(e)}
-            initialValues={{
-              remember: true,
-            }}
-            spellcheck="false"
-          >
-            <Form.Item
-              initialValue={email}
-              name='emailFormItem' 
-              label="Email" 
-              rules={[
-                {
-                  type: 'email',
-                  message: 'The input is not a valid E-mail!',
-                },
-                {
-                  required: true,
-                  message: 'Please input your E-mail!',
-                },
-              ]}
-            >
-              <Input 
-                size="large" 
-                type='email'
-                placeholder='Email'
-                name='email'
-                value={email}
-                onChange={e => onChange(e)}
-                prefix={<UserOutlined />}
-              />
-            </Form.Item>
-            <Form.Item initialValue={password} name="passwordFormItem"label="Password" rules={[
-              { 
-                required: true,
-                message: 'Please input your Password!',
+    <div>
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+        <Title>COURSES</Title>
+        {/* <div>
+          { user.name ?
+            <p>{ user.name }</p>
+            :
+            <p>not logged in</p>
+          }
+        </div> */}
+        <Title level={2}>Log in to your account</Title>
+        <Form 
+          onFinish={e => onSubmit(e)}
+          initialValues={{
+            remember: true,
+          }}
+          spellcheck="false"
+        >
+          <Form.Item
+            initialValue={email}
+            name='emailFormItem' 
+            rules={[
+              {
+                type: 'email',
+                message: 'The input is not a valid E-mail!',
               },
-              { 
-                min: 8,
-                message:'Minimum 8 characters!',
-              }
-              ]}
-            >
-                <Input.Password
-                  size='large'
-                  type='password'
-                  placeholder='Password'
-                  name='password'
-                  value={password}
-                  onChange={e => onChange(e)}
-                  iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                />
+              {
+                required: true,
+                message: 'Please input your E-mail!',
+              },
+            ]}
+          >
+            <Input 
+              size="large" 
+              type='email'
+              placeholder='Email'
+              name='email'
+              value={email}
+              onChange={e => onChange(e)}
+              prefix={<UserOutlined />}
+            />
+          </Form.Item>
+          <Form.Item initialValue={password} name="passwordFormItem" rules={[
+            { 
+              required: true,
+              message: 'Please input your Password!',
+            },
+            { 
+              min: 8,
+              message:'Minimum 8 characters!',
+            }
+            ]}
+          >
+              <Input.Password
+                size='large'
+                type='password'
+                placeholder='Password'
+                name='password'
+                value={password}
+                onChange={e => onChange(e)}
+                iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                prefix={<LockOutlined className="site-form-item-icon" />}
+              />
+          </Form.Item>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Form.Item name="remember" valuePropName="checked">
+              <Checkbox onChange={e => handleCheckbox(e)} name="rememberMe" value={rememberMe}>Remember me</Checkbox>
             </Form.Item>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Form.Item name="remember" valuePropName="checked">
-                <Checkbox onChange={e => handleCheckbox(e)} name="rememberMe" value={rememberMe}>Remember me</Checkbox>
-              </Form.Item>
-              <Form.Item>
-                <Text>Don't have an account?<Link to='/signup'> Sign Up</Link></Text>
-              </Form.Item>
-            </div>
-            <Button 
-              type="primary"
-              block
-              disabled={!isEnabled}
-              htmlType="submit">
-              Login
-            </Button>
-            </Form>
-          <Text>Forgot your Password?<Link to='/reset_password'> Reset Password</Link></Text>
-        </Space>
-      </div>
+            <Form.Item>
+              <Text>Don't have an account?<Link to='/signup'> Sign Up</Link></Text>
+            </Form.Item>
+          </div>
+          <Button 
+            type="primary"
+            block
+            disabled={!isEnabled}
+            htmlType="submit">
+            Login
+          </Button>
+        </Form>
+        <Text>Forgot your Password?<Link to='/reset_password'> Reset Password</Link></Text>
+      </Space>
     </div>
   );
 };

@@ -35,7 +35,7 @@ const CustomLayout = ({ isAuthenticated, user, props }) => {
             <center className="profile">
               <img
                 className={active ? 'profile-img' : 'profile-img-collapsed'}
-                src=""
+                src="https://images.unsplash.com/photo-1527082395-e939b847da0d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=675&q=80"
                 alt=""
               />
               { isAuthenticated?
