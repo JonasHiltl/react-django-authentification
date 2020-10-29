@@ -39,19 +39,12 @@ const NormalLoginForm = ({ login, isAuthenticated, user }) => {
     }
   };
   
-  /* if (isAuthenticated)
-    return <Redirect to='/' />; */
+  if (isAuthenticated)
+    return <Redirect to='/' />;
   return (
     <div>
       <Space direction="vertical" size={24} style={{ width: '100%' }}>
         <Title>COURSES</Title>
-        {/* <div>
-          { user.name ?
-            <p>{ user.name }</p>
-            :
-            <p>not logged in</p>
-          }
-        </div> */}
         <Title level={2}>Log in to your account</Title>
         <Form 
           onFinish={e => onSubmit(e)}

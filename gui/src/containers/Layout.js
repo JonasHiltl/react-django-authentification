@@ -15,7 +15,7 @@ const CustomLayout = ({ isAuthenticated, user, props }) => {
     margin-right: 15px;
   `;
 
-  if (isAuthenticated === false)
+  if (isAuthenticated === null)
         return <Redirect to='/login' />;
 
   return (

@@ -34,6 +34,11 @@ export default function(state = initialState, action) {
                 access: payload.access,
                 refresh: payload.refresh
             }
+        case SIGNUP_SUCCESS:
+            return {
+                ...state,
+                isAuthenticated: false
+            }
         case USER_LOADED_SUCCESS:
             return {
                 ...state,
@@ -50,6 +55,7 @@ export default function(state = initialState, action) {
                 user: []
             }
         case LOGIN_FAIL:
+        case SIGNUP_FAIL:
         case LOGOUT:
             localStorage.removeItem('access');
             localStorage.removeItem('refresh');

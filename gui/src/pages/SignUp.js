@@ -1,11 +1,189 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
 
-import { Typography } from 'antd';
+import { Form, Input, Button, Space, Typography } from 'antd';
+import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone, MailOutlined } from '@ant-design/icons';
+import { signup } from '../store/actions/auth';
+import PasswordStrengthMeter from '../components/PasswordStrengthMeter'
 
-const { Title } = Typography;
+const { Text, Title  } = Typography;
 
-const SignUp = () => (
-<Title>Signup</Title>
-);
+const SignUp = ({ signup, isAuthenticated}) => {
+    const [accountCreated, setAccountCreated] = useState(false);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        re_password: ''
+    });
 
-export default SignUp;
+    const { firstName, lastName, email, password, re_password } = formData;
+
+    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    var mailformat = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const isEnabled = email.match(mailformat) && password.length > 7 && password === re_password && firstName.length > 0 && lastName.length > 0;
+
+    const name = firstName + ' ' + lastName;
+
+    const onSubmit = e => {
+        //e.preventDefault(); prevents the site from reloading only important when you use native html button or input not with AntDesign
+
+        if (password === re_password) {
+            signup(name, email, password, re_password);
+            setAccountCreated(true);
+        }
+    };
+  
+    if (isAuthenticated)
+        return <Redirect to='/' />;
+    /* if (accountCreated)
+        return <Redirect to='/login' />; */
+
+    return (
+        <div>
+            <Space direction="vertical" size={24} style={{ width: '100%' }}>
+                <Title>COURSES</Title>
+                <Title level={2}>Create your account</Title>
+                <Form 
+                    onFinish={e => onSubmit(e)}
+                    spellcheck="false"
+                    >
+                    <div style={{ display: 'flex', width: '100%' }}>
+                        <Space>
+                            <Form.Item
+                                name='firstNameFormItem'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your first Name!',
+                                    },
+                                ]}
+                                >
+                                <Input 
+                                    size="large" 
+                                    placeholder='first Name'
+                                    name='firstName'
+                                    value={firstName}
+                                    onChange={e => onChange(e)}
+                                    prefix={<UserOutlined />}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                name='lastNameFormItem'
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your last Name!',
+                                    },
+                                ]}
+                                >
+                                <Input 
+                                    size="large" 
+                                    placeholder='last Name'
+                                    name='lastName'
+                                    value={lastName}
+                                    onChange={e => onChange(e)}
+                                />
+                            </Form.Item>
+                        </Space>
+                    </div>
+                    <Form.Item
+                        name='emailFormItem' 
+                        rules={[
+                            {
+                                type: 'email',
+                                message: 'The input is not a valid E-mail!',
+                            },
+                            {
+                                required: true,
+                                message: 'Please input your E-mail!',
+                            },
+                            ]}
+                        >
+                        <Input 
+                            size="large" 
+                            type='email'
+                            placeholder='Email'
+                            name='email'
+                            value={email}
+                            onChange={e => onChange(e)}
+                            prefix={<MailOutlined />}
+                        />
+                    </Form.Item>
+                    <Form.Item 
+                        name="passwordFormItem" 
+                        rules={[
+                            { 
+                                required: true,
+                                message: 'Please input your Password!',
+                            },
+                            { 
+                                min: 8,
+                                message:'Minimum 8 characters!',
+                            }
+                            ]}
+                        >
+                        <Input.Password
+                            size='large'
+                            type='password'
+                            placeholder='Password'
+                            name='password'
+                            value={password}
+                            onChange={e => onChange(e)}
+                            iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                            prefix={<LockOutlined className="site-form-item-icon" />}
+                        />
+                    </Form.Item>
+                    <Form.Item 
+                        name="confirmPasswordFormItem" 
+                        rules={[
+                            { 
+                                required: true,
+                                message: 'Please confirm your Password!',
+                            },
+                            { 
+                                min: 8,
+                                message:'Minimum 8 characters!',
+                            }
+                            ]}
+                        >
+                            <Input.Password
+                                size='large'
+                                type='password'
+                                placeholder='Confirm Password'
+                                name='re_password'
+                                value={re_password}
+                                onChange={e => onChange(e)}
+                                iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                                prefix={<LockOutlined className="site-form-item-icon" />}
+                            />
+                        </Form.Item>
+                    <Form.Item>
+                        <PasswordStrengthMeter password={password}/>
+                    </Form.Item>
+                    <Form.Item>
+                        <Text>Alredy have an account?<Link to='/login'> Login</Link></Text>
+                    </Form.Item>
+                    <Button 
+                        type="primary"
+                        block
+                        disabled={!isEnabled}
+                        htmlType="submit">
+                        SignUp
+                    </Button>
+                </Form>
+            </Space>
+        </div>
+    );
+};
+  
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+  }
+};
+
+export default connect(mapStateToProps, { signup })(SignUp);

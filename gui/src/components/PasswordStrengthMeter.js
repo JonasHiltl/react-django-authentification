@@ -9,7 +9,6 @@ const PasswordStrengthMeter = (props) => {
     const { password } = props
     const testedResult = zxcvbn(password);
     const Percent = testedResult.score * 25
-    const showLabel = password.lenght > 0
 
     const createPasswordLabel = (result) => {
         switch (result.score) {

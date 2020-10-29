@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { reset_password } from '../store/actions/auth';
 import { Typography, Form, Input, Tooltip, Button, Space } from 'antd';
 import { UserOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { ReactComponent as EmailIcon } from '../assets/EmailIcon.svg';
 
 const { Title, Text } = Typography;
 
@@ -44,8 +45,13 @@ const ResetPassword = (props) => {
                                 </div>
                             </Link>
                         </Tooltip>
-                        <Title level={2}>Check your Email</Title>
-                        <Text>We have sent you your password recovery instructions to your email.</Text>
+                        <div style={{ width: '100%', justifyContent: 'center', display: 'flex' }}>
+                            <EmailIcon style={{ height: '90px'}}/>
+                        </div>
+                        <Title style={{ textAlign: 'center' }}level={2}>Check your Email</Title>
+                        <div style={{ textAlign: 'center'}}>
+                            <Text >We have sent you your password recovery instructions to your email.</Text>
+                        </div>
                     </Space>
                 </div>:
                 <div>

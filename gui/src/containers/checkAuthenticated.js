@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { checkAuthenticated, load_user } from '../store/actions/auth';
 
 const CheckAuthenticated = (props) => {
-    useEffect(() => {
+    useEffect((props) => {
         const fetchData = async () => {
             try {
                 await props.checkAuthenticated();

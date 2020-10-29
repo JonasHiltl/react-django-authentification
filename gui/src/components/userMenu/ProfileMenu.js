@@ -1,9 +1,8 @@
 import React from 'react';
-import { css } from 'emotion';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { Menu, Dropdown, Avatar, Modal, Button, Typography, Space } from 'antd';
+import { Menu, Dropdown, Avatar, Modal, Button, Typography } from 'antd';
 import { UserOutlined, LogoutOutlined, DownOutlined } from '@ant-design/icons';
 import './ProfileMenu.less';
 import { logout } from '../../store/actions/auth';
