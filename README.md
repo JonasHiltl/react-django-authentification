@@ -6,5 +6,6 @@ The authentication is a JWT authentication
    Password strenght gets estimated through the Zxcvbn library
 2. Acivate the account through an E-mail link
 3. Login an create access and refresh token
+4. Reset Password
 
 (Logout) functionality works but I couldn't implement it into the JSX
