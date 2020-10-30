@@ -23,12 +23,13 @@ const Activate = ({ verify, match }) => {
         return <Redirect to='/' />
     return (
         <AuthContainer>
-            <div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <Space
                     direction='vertical'
                     >
                     <Title level={2}>Verify your Account:</Title>
                     <Button 
+                        size='large'
                         onClick={verify_account}
                         block
                         type="primary">
