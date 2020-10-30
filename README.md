@@ -7,4 +7,4 @@ The authentication is a JWT authentication
 2. Acivate the account through an E-mail link
 3. Login an create access and refresh token
 
-(Logout) dunctionality works but I couldn't implement it into the JSX
+(Logout) functionality works but I couldn't implement it into the JSX
